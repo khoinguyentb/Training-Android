@@ -9,7 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,6 +38,24 @@ class MainActivity : AppCompatActivity() {
                 textView.text = it.toString()
             }
         }
+    }
 
+
+
+    fun main() = runBlocking {
+        val numbersFlow = flow {
+            for (i in 1..10) {
+                delay(100)
+                emit(i)
+            }
+        }
+
+        numbersFlow
+            .filter { it % 2 == 0 }
+            .map { it * it }
+            .onEach { println("Mapped value: $it") }
+            .collect { value ->
+                println("Final value: $value")
+            }
     }
 }
