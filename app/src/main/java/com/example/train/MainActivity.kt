@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.train.data_store.DataStoreManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
@@ -20,6 +21,8 @@ import kotlinx.coroutines.runBlocking
 class MainActivity : AppCompatActivity() {
 
     private val viewModel : MainViewModel by viewModels()
+
+    private lateinit var dataStoreManager: DataStoreManager
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,20 @@ class MainActivity : AppCompatActivity() {
                 textView.text = it.toString()
             }
         }
+
+        dataStoreManager = DataStoreManager(this)
+
+
+        lifecycleScope.launch {
+            dataStoreManager.saveUserName("User Name 1")
+        }
+
+        lifecycleScope.launch {
+            dataStoreManager.getUserName().collect { userName ->
+                println("User Name: $userName")
+            }
+        }
+
     }
 
 
